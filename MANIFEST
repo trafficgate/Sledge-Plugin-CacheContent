@@ -1,0 +1,5 @@
+Changes
+MANIFEST
+Makefile.PL
+lib/Sledge/Plugin/CacheContent.pm
+t/00_compile.t
