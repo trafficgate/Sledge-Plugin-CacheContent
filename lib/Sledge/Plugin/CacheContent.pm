@@ -2,7 +2,7 @@ package Sledge::Plugin::CacheContent;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = 0.01;
+$VERSION = 0.02;
 
 use Apache::File;
 use Apache::Constants;
