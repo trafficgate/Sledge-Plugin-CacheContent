@@ -30,7 +30,7 @@ sub capture_output {
     my($self, $content) = @_;
     my($dir, $file) = _map_filepath($self->r);
     warn "dir is $dir, file is $file" if $Debug;
-    mkpath $dir, 0777 unless -e $dir;
+    mkpath $dir, 0, 0777 unless -e $dir;
 
     my $fh = Apache::File->new("> $dir/$file") or die "$dir/$file: $!";
     print $fh $content;
