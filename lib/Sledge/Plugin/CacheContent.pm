@@ -77,6 +77,13 @@ sub _build_url {
 sub handler {
     my $r = shift;
     return DECLINED if ($r->main || $r->method eq 'POST');
+
+    # client no-cache
+    my $cache_control = $r->header_in('Pragma') || $r->header_in('Cache-Control');
+    if (defined $cache_control && $cache_control =~ /no-cache/) {
+	return DECLINED;
+    }
+
     my($dir, $digest) = _map_filepath($r);
 
     my $file = "$dir/$digest";
