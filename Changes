@@ -1,5 +1,9 @@
 Revision history for Perl extension Sledge::Plugin::CacheContent
 
+0.03  
+	- ignore POST request
+	* Added SledgeCacheByUserAgent
+
 0.02  Thu Apr 10 04:21:40 JST 2003
 	- Fix mkpath bug
 	  (Thanks to Yoshiki Kurihara) 

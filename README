@@ -1,0 +1,80 @@
+NAME
+    Sledge::Plugin::CacheContent - Generate and serve cached content
+
+SYNOPSIS
+      PerlTransHandler Sledge::Plugin::CacheContent
+      <Files ~ \.cgi$>
+      SetHandler perl-script
+      PerlHandler Apache::Registry
+      PerlSetVar SledgeCacheDir /home/sledge/cache
+      PerlSetVar SledgeCacheTTL 120
+      PerlSetVar SledgeCacheByUserAgent 1
+      </Files>
+
+      # in your Pages class
+      use Sledge::Plugin::CacheContent;
+
+DESCRIPTION
+    Sledge::Plugin::CacheContent ¤ÏSledge¤Ë¤è¤êºîÀ®¤µ¤ì¤ë¥³¥ó¥Æ¥ó¥Ä¤òÀÅÅª
+    ¤Ë¥Ç¥£¥¹¥¯½ÐÎÏ¤·¡¢TTL¤ÎÈÏ°ÏÆâ¤ÇÀÅÅª¤Ë¥µ¡¼¥Ö¤¹¤ëmod_perl ¥Ï¥ó¥É¥é¤Ç¤¹¡£
+
+    ¥æ¡¼¥¶¤´¤È¤ËÊÑ²½¤·¤Ê¤¤¥³¥ó¥Æ¥ó¥Ä¤Ê¤É¤ò½ÐÎÏ¤¹¤ëºÝ¤Ë¥Ñ¥Õ¥©¡¼¥Þ¥ó¥¹¤ÎÂç¤­
+    ¤Ê¸þ¾å¤¬¤Î¤¾¤á¤Þ¤¹¡£mod_perl ¤ò EVERYTHING=1 ¤Ç¥³¥ó¥Ñ¥¤¥ë¤·¤Æ¤¤¤ëÉ¬Í×
+    ¤¬¤¢¤ê¤Þ¤¹¡£
+
+    ¥­¥ã¥Ã¥·¥å¤ÎÃ±°Ì¤ÏURL(QUERY_STRING ¤Õ¤¯¤à)¤ò¥Ù¡¼¥¹¤È¤·¤Æ¤¤¤Þ¤¹¤Î¤Ç¡¢
+
+      /news/article.cgi?id=1
+      /news/article.cgi?id=2
+
+    ¤Ê¤É¤ÏÊÌ¤Î¤â¤Î¤È¤·¤Æ¥­¥ã¥Ã¥·¥å¤µ¤ì¤Þ¤¹¡£
+
+OPTIONS
+    °Ê²¼¤Î¥ª¥×¥·¥ç¥ó¹àÌÜ¤òPerlSetVar¤òÍøÍÑ¤·¤ÆÀßÄê¤Ç¤­¤Þ¤¹¡£
+
+    SledgeCacheDir
+        ¥­¥ã¥Ã¥·¥å¥Õ¥¡¥¤¥ë¤¬½ÐÎÏ¤µ¤ì¤ë¥Ç¥£¥ì¥¯¥È¥ê¡£¥Ç¥Õ¥©¥ë¥È¤Ï
+        /tmp/Sledge-Plugin-CacheContent
+
+    SledgeCacheTTL
+        ¥­¥ã¥Ã¥·¥å¤ÎÀ¸Â¸´ü´Ö(Ã±°Ì:Ê¬)¡£¥Ç¥Õ¥©¥ë¥È¤Ï60
+
+    SledgeCacheByUserAgent
+        UserAgent¤´¤È¤Ë¥­¥ã¥Ã¥·¥å¤òÀ¸À®¤¹¤ë¥ª¥×¥·¥ç¥ó¡£·ÈÂÓÃ¼Ëö¸þ¤±¤Ê¤É¡¢¥Õ¥
+        £¥ë¥¿¥ê¥ó¥°
+        ¤·¤Æ¤¤¤ë¾ì¹ç¤ËÊØÍø¤Ç¤¹¡£(¥Õ¥£¥ë¥¿¥ê¥ó¥°¤¬´°Î»¤·¤¿¸å¤Ë¥­¥ã¥Ã¥·¥å¤¹¤ë¤
+        è ¤¦¤Ë¡¢¤³¤Î¥â¥¸¥å¡¼¥ë¤Î use
+        ¤Ï¥Õ¥£¥ë¥¿·Ï¥×¥é¥°¥¤¥ó¤ÎºÇ¸å¤Ë¤·¤Æ¤ª¤¯É¬Í×¤¬¤¢¤ê¤Þ¤¹)
+        HTTP::MobileAgent
+        ¥â¥¸¥å¡¼¥ë¤¬ÊÌÅÓ¥¤¥ó¥¹¥È¡¼¥ë¤µ¤ì¤Æ¤¤¤ëÉ¬Í×¤¬¤¢¤ê¤Þ¤¹¡£
+
+NOTE
+    ½é²ó¥¢¥¯¥»¥¹»þ¤Ë¥­¥ã¥Ã¥·¥å¥Õ¥¡¥¤¥ë¤ò½ÐÎÏ¤·¡¢2ÅÙÌÜ°Ê¹ß¤ÏTTL¤ò¥Á¥§¥Ã¥¯¸å¡¢
+    ¤½¤Î¥Õ¥¡¥¤¥ë¤òApache¤Î¥Ç¥Õ¥©¥ë¥È¥Ï¥ó¥É¥é¤Ë¤Æ½ÐÎÏ¤¹¤ë¤·¤¯¤ß¤Ë¤Ê¤Ã¤Æ¤¤¤Þ
+    ¤¹¡£TTL¥Á¥§¥Ã¥¯¤¬¼ºÇÔ(TTL¤ò¥ª¡¼¥Ð¡¼¤·¤Æ¤¤¤ë)¾ì¹ç¤Ë¤Ï¡¢ºÆÅÙÆ°ÅªÀ¸À®¤ò¹Ô
+    ¤¤¥­¥ã¥Ã¥·¥å¥Õ¥¡¥¤¥ë¤ò¹¹¿·¤·¤Þ¤¹¡£
+
+    ¼ÂºÝ¤Ë Hello World! ¤Ë¤è¤ë¥Ù¥ó¥Á¥Þ¡¼¥¯¤ò¤È¤Ã¤Æ¤ß¤ë¤È¡¢(ab -n100
+    -c5¤Ç¥Ù¥ó¥Á)
+
+    CacheContent»ÈÍÑ
+
+      Requests per second:    134.95 [#/sec] (mean)
+      Time per request:       37.05 [ms] (mean)
+
+    CacheContent»ÈÍÑ¤»¤º
+
+      Requests per second:    27.26 [#/sec] (mean)
+      Time per request:       183.40 [ms] (mean)
+
+    ¤Î¤è¤¦¤Ë·àÅª¤Ë¥Ñ¥Õ¥©¡¼¥Þ¥ó¥¹¤¬¸þ¾å¤·¤Æ¤¤¤Þ¤¹¡£
+
+AUTHOR
+    Tatsuhiko Miyagawa <miyagawa@edge.jp>
+
+    This library is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+
+SEE ALSO
+    the Apache::CacheContent manpage
+

@@ -1,5 +1,6 @@
 Changes
 MANIFEST
 Makefile.PL
+README
 lib/Sledge/Plugin/CacheContent.pm
 t/00_compile.t

@@ -2,7 +2,7 @@ package Sledge::Plugin::CacheContent;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = 0.02;
+$VERSION = 0.03;
 
 use Apache::File;
 use Apache::Constants;
@@ -20,7 +20,9 @@ sub import {
 	$pkg->register_hook(
 	    AFTER_INIT => sub {
 		my $self = shift;
-		$self->add_filter(\&capture_output);
+		unless ($self->is_post_request) {
+		    $self->add_filter(\&capture_output);
+		}
 	    },
 	);
     }
@@ -48,11 +50,19 @@ sub capture_output {
 sub _map_filepath {
     my $r = shift;
     my $url = _build_url($r);
-    my $digest = md5_hex($url);
+    my $key = $r->dir_config('SledgeCacheByUserAgent')
+	? join("\t", $url, agent_name($r)) : $url;
+    my $digest = md5_hex($key);
     my $base_dir = $r->dir_config('SledgeCacheDir') || '/tmp/Sledge-Plugin-Cache';
 
     my $dir = File::Spec->catfile($base_dir, substr($digest, 0, 1), substr($digest, 1, 1));
     return $dir, $digest;
+}
+
+sub agent_name {
+    my $r = shift;
+    require HTTP::MobileAgent;
+    return HTTP::MobileAgent->new($r)->name;
 }
 
 sub _build_url {
@@ -66,7 +76,7 @@ sub _build_url {
 
 sub handler {
     my $r = shift;
-    return DECLINED if $r->main;		# it's a sub-request
+    return DECLINED if ($r->main || $r->request_method eq 'POST');
     my($dir, $digest) = _map_filepath($r);
 
     my $file = "$dir/$digest";
@@ -104,12 +114,13 @@ Sledge::Plugin::CacheContent - Generate and serve cached content
 
 =head1 SYNOPSIS
 
+  PerlTransHandler Sledge::Plugin::CacheContent
   <Files ~ \.cgi$>
   SetHandler perl-script
-  PerlFixupHandler Sledge::Plugin::CacheContent
   PerlHandler Apache::Registry
   PerlSetVar SledgeCacheDir /home/sledge/cache
   PerlSetVar SledgeCacheTTL 120
+  PerlSetVar SledgeCacheByUserAgent 1
   </Files>
 
   # in your Pages class
@@ -144,6 +155,13 @@ Sledge::Plugin::CacheContent はSledgeにより作成されるコンテンツを静的
 =item SledgeCacheTTL
 
 キャッシュの生存期間(単位:分)。デフォルトは60
+
+=item SledgeCacheByUserAgent
+
+UserAgentごとにキャッシュを生成するオプション。携帯端末向けなど、フィルタリング
+している場合に便利です。(フィルタリングが完了した後にキャッシュするよ
+うに、このモジュールの use はフィルタ系プラグインの最後にしておく必要があります)
+HTTP::MobileAgent モジュールが別途インストールされている必要があります。
 
 =back
 
