@@ -76,7 +76,7 @@ sub _build_url {
 
 sub handler {
     my $r = shift;
-    return DECLINED if ($r->main || $r->request_method eq 'POST');
+    return DECLINED if ($r->main || $r->method eq 'POST');
     my($dir, $digest) = _map_filepath($r);
 
     my $file = "$dir/$digest";
