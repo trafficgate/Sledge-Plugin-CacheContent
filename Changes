@@ -1,6 +1,6 @@
 Revision history for Perl extension Sledge::Plugin::CacheContent
 
-0.03  
+0.03  Tue Apr 22 21:02:21 JST 2003
 	- ignore POST request
 	* Added SledgeCacheByUserAgent
 
